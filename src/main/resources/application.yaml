@@ -19,3 +19,14 @@ spring:
     properties:
       hibernate:
         show_sql: true
+  rabbitmq:
+    addresses: amqps://xewpbrhs:8oQrjnoywt93dUlmRNHyLiktNDnydxcp@leopard.lmq.cloudamqp.com/xewpbrhs
+
+
+Culinary:
+  broker:
+    exchange:
+      userEventExchange: Culinary.userevent
+    queue:
+      userEventQueue:
+        name: Culinary.userevent.ms.userService
