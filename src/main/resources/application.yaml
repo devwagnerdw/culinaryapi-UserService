@@ -1,0 +1,21 @@
+server:
+  port: 8081
+  servlet:
+    context-path: '/Culinaryapi-UserService/'
+
+spring:
+  application:
+    name: Culinaryapi-MenuService
+  datasource:
+    url:  jdbc:postgresql://localhost:5432/Culinaryapi-UserService
+    username: postgres
+    password: 123
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      jdbc:
+        lob.non-contextual-creation: true
+    properties:
+      hibernate:
+        show_sql: true
