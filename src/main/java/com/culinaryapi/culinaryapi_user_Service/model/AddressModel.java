@@ -1,7 +1,9 @@
 package com.culinaryapi.culinaryapi_user_Service.model;
 
+import com.culinaryapi.culinaryapi_user_Service.dtos.UserServiceEventDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import org.springframework.beans.BeanUtils;
 
 import java.util.UUID;
 
@@ -78,5 +80,14 @@ public class AddressModel {
 
     public void setUser(UserModel user) {
         this.user = user;
+    }
+
+    public void Address(UserModel userModel) {
+    }
+
+    public UserServiceEventDto convertToUserServiceEventDto() {
+        var userServiceEventDto = new UserServiceEventDto();
+        BeanUtils.copyProperties(this, userServiceEventDto);
+        return userServiceEventDto;
     }
 }

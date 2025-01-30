@@ -5,9 +5,9 @@ server:
 
 spring:
   application:
-    name: Culinaryapi-MenuService
+    name: Culinaryapi-UserService
   datasource:
-    url:  jdbc:postgresql://localhost:5432/Culinaryapi-UserService
+    url: jdbc:postgresql://localhost:5432/Culinaryapi-UserService
     username: postgres
     password: 123
   jpa:
@@ -15,18 +15,19 @@ spring:
       ddl-auto: update
       dialect: org.hibernate.dialect.PostgreSQLDialect
       jdbc:
-        lob.non-contextual-creation: true
+        lob:
+          non-contextual-creation: true
     properties:
       hibernate:
         show_sql: true
   rabbitmq:
     addresses: amqps://xewpbrhs:8oQrjnoywt93dUlmRNHyLiktNDnydxcp@leopard.lmq.cloudamqp.com/xewpbrhs
 
-
 Culinary:
   broker:
     exchange:
       userEventExchange: Culinary.userevent
+      userServiceEvent: Culinary.userServiceEvent
     queue:
       userEventQueue:
         name: Culinary.userevent.ms.userService
