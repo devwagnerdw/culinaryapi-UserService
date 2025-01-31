@@ -11,7 +11,7 @@ public class AddressDto {
 
 
     @NotNull(message = "ID cannot be null")
-    UUID id;
+    private UUID userId;
 
     @NotBlank(message = "Street cannot be blank")
     @Size(max = 255, message = "Street must be at most 255 characters")
@@ -33,12 +33,12 @@ public class AddressDto {
     @Size(max = 100, message = "Country must be at most 100 characters")
     String country;
 
-    public UUID getId() {
-        return id;
+    public @NotNull(message = "ID cannot be null") UUID getUserId() {
+        return userId;
     }
 
-    public void setId( UUID id) {
-        this.id = id;
+    public void setUserId(@NotNull(message = "ID cannot be null") UUID userId) {
+        this.userId = userId;
     }
 
     public  String getStreet() {
@@ -73,11 +73,11 @@ public class AddressDto {
         this.postalCode = postalCode;
     }
 
-    public  String getcountry() {
+    public  String getCountry() {
         return country;
     }
 
-    public void setcountry( String countr) {
+    public void setCountry( String countr) {
         this.country = countr;
     }
 }

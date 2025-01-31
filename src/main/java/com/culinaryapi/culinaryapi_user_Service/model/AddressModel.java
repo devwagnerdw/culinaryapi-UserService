@@ -1,12 +1,11 @@
 package com.culinaryapi.culinaryapi_user_Service.model;
 
 import com.culinaryapi.culinaryapi_user_Service.dtos.UserServiceEventDto;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import org.springframework.beans.BeanUtils;
 
 import java.util.UUID;
-
 
 @Table(name = "TB_Address")
 @Entity
@@ -21,9 +20,9 @@ public class AddressModel {
     private String postalCode;
     private String country;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id",nullable = false)
     private UserModel user;
 
     public UUID getAddressId() {
@@ -80,9 +79,6 @@ public class AddressModel {
 
     public void setUser(UserModel user) {
         this.user = user;
-    }
-
-    public void Address(UserModel userModel) {
     }
 
     public UserServiceEventDto convertToUserServiceEventDto() {

@@ -10,8 +10,6 @@ import java.util.UUID;
 
 public interface UserService {
 
-    ResponseEntity<Object> getUserWithAddresses(UUID userId);
-
     void save(UserModel userModel);
 
     void delete(UUID userId);

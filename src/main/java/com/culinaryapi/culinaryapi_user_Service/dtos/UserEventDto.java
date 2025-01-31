@@ -9,7 +9,7 @@ import java.util.UUID;
 public class UserEventDto {
 
     private UUID userId;
-    private String username;
+    private String email;
     private String userStatus;
     private String phoneNumber;
     private String actionType;
@@ -23,12 +23,12 @@ public class UserEventDto {
         this.userId = userId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getUserStatus() {

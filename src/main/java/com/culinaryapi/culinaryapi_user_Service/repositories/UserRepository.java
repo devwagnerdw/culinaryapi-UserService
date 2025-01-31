@@ -8,7 +8,4 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<UserModel,UUID> {
-
-    @EntityGraph(attributePaths = "addresses", type = EntityGraph.EntityGraphType.FETCH)
-    Optional<UserModel> findById(UUID userId);
 }

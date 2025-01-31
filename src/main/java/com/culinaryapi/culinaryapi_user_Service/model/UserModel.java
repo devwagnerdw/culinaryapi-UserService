@@ -1,7 +1,9 @@
 package com.culinaryapi.culinaryapi_user_Service.model;
 
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -10,11 +12,12 @@ import java.util.UUID;
 public class UserModel {
     @Id
     private UUID userId;
-    private String username;
+    private String email;
     private String phoneNumber;
-    private String userStatus ;
+    private String userStatus;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<AddressModel> addresses;
 
     public UUID getUserId() {
@@ -25,12 +28,12 @@ public class UserModel {
         this.userId = userId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPhoneNumber() {
