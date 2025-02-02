@@ -2,10 +2,12 @@ package com.culinaryapi.culinaryapi_user_Service.dtos;
 
 
 import com.culinaryapi.culinaryapi_user_Service.model.UserModel;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.beans.BeanUtils;
 
 import java.util.UUID;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserEventDto {
 
     private UUID userId;

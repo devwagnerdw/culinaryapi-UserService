@@ -1,6 +1,7 @@
 package com.culinaryapi.culinaryapi_user_Service.services.impl;
 
 import com.culinaryapi.culinaryapi_user_Service.dtos.AddressDto;
+import com.culinaryapi.culinaryapi_user_Service.enums.ActionType;
 import com.culinaryapi.culinaryapi_user_Service.model.AddressModel;
 import com.culinaryapi.culinaryapi_user_Service.model.UserModel;
 import com.culinaryapi.culinaryapi_user_Service.publishers.UserEventPublisher;
@@ -38,9 +39,8 @@ public class AddressServiceImpl implements AddressService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("USER NOT FOUND");
         }
         var addressModel = new AddressModel();
+
         BeanUtils.copyProperties(addressDto, addressModel);
-
-
 
         UserModel userModel = optionalUserModel.get();
         if (userModel.getAddresses().size() >= 3) {
@@ -49,6 +49,7 @@ public class AddressServiceImpl implements AddressService {
 
         addressModel.setUser(userModel);
         addressRepository.save(addressModel);
+        userEventPublisher.publishUserEvent(addressModel.convertToUserServiceEventDto(),ActionType.CREATE);
         return ResponseEntity.status(HttpStatus.CREATED).body(addressModel);
     }
 
@@ -65,12 +66,12 @@ public class AddressServiceImpl implements AddressService {
 
 
     @Override
-    public ResponseEntity<Object>updateAddress( UUID addressId, AddressDto addressDto){
-      Optional<AddressModel> optionalAddressModel= addressRepository.findById(addressId);
-        if (optionalAddressModel.isEmpty()){
+    public ResponseEntity<Object> updateAddress(UUID addressId, AddressDto addressDto) {
+        Optional<AddressModel> optionalAddressModel = addressRepository.findById(addressId);
+        if (optionalAddressModel.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        var addressModel= new  AddressModel();
+        AddressModel addressModel = optionalAddressModel.get();
         addressModel.setStreet(addressDto.getStreet());
         addressModel.setCity(addressDto.getCity());
         addressModel.setState(addressDto.getState());

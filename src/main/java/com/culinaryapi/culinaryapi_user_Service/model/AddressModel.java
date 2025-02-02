@@ -81,6 +81,10 @@ public class AddressModel {
         this.user = user;
     }
 
+    public UUID getUserId() {
+        return user.getUserId();
+    }
+
     public UserServiceEventDto convertToUserServiceEventDto() {
         var userServiceEventDto = new UserServiceEventDto();
         BeanUtils.copyProperties(this, userServiceEventDto);

@@ -6,6 +6,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class UserEventPublisher {
 
@@ -18,10 +20,10 @@ public class UserEventPublisher {
 
 
     @Value(value="${Culinary.broker.exchange.userServiceEvent}" )
-    private String exchangeuserServiceEvent;
+    private String exchangeUserServiceEvent;
 
     public void publishUserEvent(UserServiceEventDto userServiceEventDto, ActionType actionType){
         userServiceEventDto.setActionType(actionType.toString());
-        rabbitTemplate.convertAndSend(exchangeuserServiceEvent,"",userServiceEventDto);
+        rabbitTemplate.convertAndSend(exchangeUserServiceEvent,"",userServiceEventDto);
     }
 }

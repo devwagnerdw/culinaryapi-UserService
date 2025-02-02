@@ -3,13 +3,31 @@ package com.culinaryapi.culinaryapi_user_Service.dtos;
 import java.util.UUID;
 
 public class UserServiceEventDto {
+    private UUID userId;
+    private String actionType;
+
     private UUID addressId;
     private String street;
     private String city;
     private String state;
     private String postalCode;
     private String country;
-    private String actionType;
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
+
+    public String getActionType() {
+        return actionType;
+    }
+
+    public void setActionType(String actionType) {
+        this.actionType = actionType;
+    }
 
     public UUID getAddressId() {
         return addressId;
@@ -27,14 +45,6 @@ public class UserServiceEventDto {
         this.street = street;
     }
 
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
     public String getCity() {
         return city;
     }
@@ -43,12 +53,12 @@ public class UserServiceEventDto {
         this.city = city;
     }
 
-    public String getPostalCode() {
-        return postalCode;
+    public String getState() {
+        return state;
     }
 
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
+    public void setState(String state) {
+        this.state = state;
     }
 
     public String getCountry() {
@@ -59,11 +69,11 @@ public class UserServiceEventDto {
         this.country = country;
     }
 
-    public String getActionType() {
-        return actionType;
+    public String getPostalCode() {
+        return postalCode;
     }
 
-    public void setActionType(String actionType) {
-        this.actionType = actionType;
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
     }
 }
