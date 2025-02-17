@@ -43,7 +43,7 @@ public class AddressServiceImpl implements AddressService {
         BeanUtils.copyProperties(addressDto, addressModel);
 
         UserModel userModel = optionalUserModel.get();
-        if (userModel.getAddresses().size() >= 3) {
+        if (userModel.getAddresses().size() >= 40) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User cannot have more than 3 addresses");
         }
 

@@ -19,11 +19,11 @@ public class UserEventPublisher {
     }
 
 
-    @Value(value="${Culinary.broker.exchange.userServiceEvent}" )
+    @Value(value="${Culinary.broker.exchange.userServiceEventExchange}" )
     private String exchangeUserServiceEvent;
 
     public void publishUserEvent(UserServiceEventDto userServiceEventDto, ActionType actionType){
         userServiceEventDto.setActionType(actionType.toString());
-        rabbitTemplate.convertAndSend(exchangeUserServiceEvent,"",userServiceEventDto);
+        rabbitTemplate.convertAndSend(exchangeUserServiceEvent,"user.service.event",userServiceEventDto);
     }
 }
