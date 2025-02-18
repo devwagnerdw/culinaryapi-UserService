@@ -36,11 +36,9 @@ public class UserConsumer {
                     userService.save(userModel);
                     break;
                 case DELETE:
-                    userService.delete(userEventDto.getUserId());
                     break;
             }
         } catch (Exception e) {
-            // Logar o erro ou tratar de outra forma
             System.err.println("Erro ao processar evento: " + e.getMessage());
         }
     }

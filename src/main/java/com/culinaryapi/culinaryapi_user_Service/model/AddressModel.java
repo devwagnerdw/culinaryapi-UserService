@@ -1,6 +1,7 @@
 package com.culinaryapi.culinaryapi_user_Service.model;
 
 import com.culinaryapi.culinaryapi_user_Service.dtos.UserServiceEventDto;
+import com.culinaryapi.culinaryapi_user_Service.enums.AddressStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import org.springframework.beans.BeanUtils;
@@ -19,6 +20,9 @@ public class AddressModel {
     private String state;
     private String postalCode;
     private String country;
+
+    @Enumerated(EnumType.STRING)
+    private AddressStatus addressStatus;
 
     @JsonBackReference
     @ManyToOne
@@ -73,6 +77,14 @@ public class AddressModel {
         this.country = country;
     }
 
+    public AddressStatus getAddressStatus() {
+        return addressStatus;
+    }
+
+    public void setAddressStatus(AddressStatus addressStatus) {
+        this.addressStatus = addressStatus;
+    }
+
     public UserModel getUser() {
         return user;
     }
@@ -88,6 +100,7 @@ public class AddressModel {
     public UserServiceEventDto convertToUserServiceEventDto() {
         var userServiceEventDto = new UserServiceEventDto();
         BeanUtils.copyProperties(this, userServiceEventDto);
+        userServiceEventDto.setAddressStatus(this.addressStatus.toString());
         return userServiceEventDto;
     }
 }

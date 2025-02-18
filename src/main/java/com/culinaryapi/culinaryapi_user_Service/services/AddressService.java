@@ -14,7 +14,7 @@ public interface AddressService {
 
     ResponseEntity<Object> updateAddress(UUID addressId, AddressDto addressDto);
 
-    ResponseEntity<Object> deleteAddress(UUID addressId);
+    ResponseEntity<Object> deactivateAddress(UUID addressId);
 
     ResponseEntity<Page<AddressModel>> getUserAddresses(UUID userId, Pageable pageable);
 }

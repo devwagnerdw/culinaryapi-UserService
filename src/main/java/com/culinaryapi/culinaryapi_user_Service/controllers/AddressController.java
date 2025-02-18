@@ -3,7 +3,6 @@ package com.culinaryapi.culinaryapi_user_Service.controllers;
 import com.culinaryapi.culinaryapi_user_Service.dtos.AddressDto;
 import com.culinaryapi.culinaryapi_user_Service.model.AddressModel;
 import com.culinaryapi.culinaryapi_user_Service.services.AddressService;
-import com.culinaryapi.culinaryapi_user_Service.services.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +26,9 @@ public class AddressController {
         return addressService.createAddress(addressDto);
     }
 
-    @DeleteMapping("/{addressId}")
-    public ResponseEntity<Object>deleteAddress(@PathVariable(value="addressId") UUID addressId){
-       return addressService.deleteAddress(addressId);
+    @PutMapping("/{addressId}/deactivate")
+    public ResponseEntity<Object> deactivateAddress(@PathVariable(value="addressId") UUID addressId){
+       return addressService.deactivateAddress(addressId);
     }
 
     @PutMapping("/{addressId}")

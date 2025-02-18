@@ -5,6 +5,7 @@ import java.util.UUID;
 public class UserServiceEventDto {
     private UUID userId;
     private String actionType;
+    private String addressStatus;
 
     private UUID addressId;
     private String street;
@@ -27,6 +28,14 @@ public class UserServiceEventDto {
 
     public void setActionType(String actionType) {
         this.actionType = actionType;
+    }
+
+    public String getAddressStatus() {
+        return addressStatus;
+    }
+
+    public void setAddressStatus(String addressStatus) {
+        this.addressStatus = addressStatus;
     }
 
     public UUID getAddressId() {

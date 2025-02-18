@@ -2,6 +2,8 @@ package com.culinaryapi.culinaryapi_user_Service.services.impl;
 
 import com.culinaryapi.culinaryapi_user_Service.dtos.AddressDto;
 import com.culinaryapi.culinaryapi_user_Service.enums.ActionType;
+import com.culinaryapi.culinaryapi_user_Service.enums.AddressStatus;
+import com.culinaryapi.culinaryapi_user_Service.exception.NotFoundException;
 import com.culinaryapi.culinaryapi_user_Service.model.AddressModel;
 import com.culinaryapi.culinaryapi_user_Service.model.UserModel;
 import com.culinaryapi.culinaryapi_user_Service.publishers.UserEventPublisher;
@@ -34,50 +36,45 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public ResponseEntity<Object> createAddress(AddressDto addressDto) {
-        Optional<UserModel> optionalUserModel = userRepository.findById(addressDto.getUserId());
-        if (optionalUserModel.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("USER NOT FOUND");
-        }
-        var addressModel = new AddressModel();
+        UserModel userModel = userRepository.findById(addressDto.getUserId())
+                .orElseThrow(() -> new NotFoundException("User not found: " + addressDto.getUserId()));
 
+        var addressModel = new AddressModel();
         BeanUtils.copyProperties(addressDto, addressModel);
 
-        UserModel userModel = optionalUserModel.get();
-        if (userModel.getAddresses().size() >= 40) {
+        if (userModel.getAddresses().size() >= 3) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User cannot have more than 3 addresses");
         }
 
         addressModel.setUser(userModel);
+        addressModel.setAddressStatus(AddressStatus.ACTIVE);
         addressRepository.save(addressModel);
         userEventPublisher.publishUserEvent(addressModel.convertToUserServiceEventDto(),ActionType.CREATE);
         return ResponseEntity.status(HttpStatus.CREATED).body(addressModel);
     }
 
-
     @Override
-    public ResponseEntity<Object> deleteAddress(UUID addressId) {
-        Optional<AddressModel> optionalAddressModel= addressRepository.findById(addressId);
-        if (optionalAddressModel.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ADDRESS NOT FOUND");
-        }
-        addressRepository.deleteById(addressId);
-        return ResponseEntity.status(HttpStatus.OK).body("Address deleted successfully.");
+    public ResponseEntity<Object> deactivateAddress(UUID addressId) {
+        AddressModel addressModel= addressRepository.findById(addressId)
+                .orElseThrow(() -> new NotFoundException ("ADDRESS NOT FOUND"));
+        addressModel.setAddressStatus(AddressStatus.BLOCKED);
+        addressRepository.save(addressModel);
+        userEventPublisher.publishUserEvent(addressModel.convertToUserServiceEventDto(),ActionType.UPDATE);
+        return ResponseEntity.status(HttpStatus.OK).body("Address blocked successfully.");
     }
 
 
     @Override
     public ResponseEntity<Object> updateAddress(UUID addressId, AddressDto addressDto) {
-        Optional<AddressModel> optionalAddressModel = addressRepository.findById(addressId);
-        if (optionalAddressModel.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        AddressModel addressModel = optionalAddressModel.get();
+        AddressModel addressModel= addressRepository.findById(addressId)
+                .orElseThrow(() -> new NotFoundException("ADDRESS NOT FOUND"));
         addressModel.setStreet(addressDto.getStreet());
         addressModel.setCity(addressDto.getCity());
         addressModel.setState(addressDto.getState());
         addressModel.setPostalCode(addressDto.getPostalCode());
         addressModel.setCountry(addressDto.getCountry());
         addressRepository.save(addressModel);
+        userEventPublisher.publishUserEvent(addressModel.convertToUserServiceEventDto(),ActionType.UPDATE);
         return ResponseEntity.status(HttpStatus.OK).body(addressModel);
     }
 
