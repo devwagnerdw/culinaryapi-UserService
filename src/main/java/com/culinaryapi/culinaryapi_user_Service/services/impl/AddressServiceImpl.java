@@ -10,6 +10,7 @@ import com.culinaryapi.culinaryapi_user_Service.publishers.UserEventPublisher;
 import com.culinaryapi.culinaryapi_user_Service.repositories.AddressRepository;
 import com.culinaryapi.culinaryapi_user_Service.repositories.UserRepository;
 import com.culinaryapi.culinaryapi_user_Service.services.AddressService;
+import com.culinaryapi.culinaryapi_user_Service.utils.PermissionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 
@@ -27,11 +27,13 @@ public class AddressServiceImpl implements AddressService {
     private final AddressRepository addressRepository;
     private final UserRepository userRepository;
     private final UserEventPublisher userEventPublisher;
+    private final PermissionUtils permissionUtils;
 
-    public AddressServiceImpl(AddressRepository addressRepository, UserRepository userRepository, UserEventPublisher userEventPublisher) {
+    public AddressServiceImpl(AddressRepository addressRepository, UserRepository userRepository, UserEventPublisher userEventPublisher, PermissionUtils permissionUtils) {
         this.addressRepository = addressRepository;
         this.userRepository = userRepository;
         this.userEventPublisher = userEventPublisher;
+        this.permissionUtils = permissionUtils;
     }
 
     @Override
@@ -39,12 +41,18 @@ public class AddressServiceImpl implements AddressService {
         UserModel userModel = userRepository.findById(addressDto.getUserId())
                 .orElseThrow(() -> new NotFoundException("User not found: " + addressDto.getUserId()));
 
+        if (!permissionUtils.hasPermission(userModel.getUserId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("You do not have permission to create an address for another user.");
+        }
+
+        if ("BLOCKED".equalsIgnoreCase(userModel.getUserStatus())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("User is blocked and cannot add an address.");
+        }
+
         var addressModel = new AddressModel();
         BeanUtils.copyProperties(addressDto, addressModel);
-
-        if (userModel.getAddresses().size() >= 3) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User cannot have more than 3 addresses");
-        }
 
         addressModel.setUser(userModel);
         addressModel.setAddressStatus(AddressStatus.ACTIVE);
@@ -57,6 +65,18 @@ public class AddressServiceImpl implements AddressService {
     public ResponseEntity<Object> deactivateAddress(UUID addressId) {
         AddressModel addressModel= addressRepository.findById(addressId)
                 .orElseThrow(() -> new NotFoundException ("ADDRESS NOT FOUND"));
+
+        if (!permissionUtils.hasPermission(addressModel.getUserId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("You do not have permission to deactivate this address.");
+        }
+
+        long activeAddressCount = addressRepository.
+                countByUserUserIdAndAddressStatus(addressModel.getUserId(), AddressStatus.ACTIVE);
+        if (activeAddressCount == 1) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You cannot deactivate this address because you must have at least one active address.");
+        }
+
         addressModel.setAddressStatus(AddressStatus.BLOCKED);
         addressRepository.save(addressModel);
         userEventPublisher.publishUserEvent(addressModel.convertToUserServiceEventDto(),ActionType.UPDATE);
@@ -68,6 +88,11 @@ public class AddressServiceImpl implements AddressService {
     public ResponseEntity<Object> updateAddress(UUID addressId, AddressDto addressDto) {
         AddressModel addressModel= addressRepository.findById(addressId)
                 .orElseThrow(() -> new NotFoundException("ADDRESS NOT FOUND"));
+
+        if (!permissionUtils.hasPermission(addressModel.getUserId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("You do not have permission to update this address.");
+        }
         addressModel.setStreet(addressDto.getStreet());
         addressModel.setCity(addressDto.getCity());
         addressModel.setState(addressDto.getState());
@@ -81,10 +106,12 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public ResponseEntity<Page<AddressModel>> getUserAddresses(UUID userId, Pageable pageable) {
-        Page<AddressModel> addresses = addressRepository.findByUserUserId(userId, pageable);
-        if (addresses.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if (!permissionUtils.hasPermission(userId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+
+        Page<AddressModel> addresses = addressRepository.findByUserUserIdAndAddressStatus(userId, AddressStatus.ACTIVE, pageable);
+
         return ResponseEntity.ok(addresses);
     }
 
