@@ -17,7 +17,6 @@ public class PermissionUtils {
     public boolean hasPermission(UUID targetUserId) {
         var currentUser = authenticationCurrentUserService.getCurrentUser();
         UUID currentUserId = currentUser.getUserId();
-        System.out.println(currentUserId);
         boolean isAdmin = currentUser.getAuthorities().stream()
                 .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
 
