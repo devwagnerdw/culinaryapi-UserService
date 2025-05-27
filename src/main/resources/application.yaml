@@ -1,11 +1,11 @@
 server:
   port: 8081
   servlet:
-    context-path: '/Culinaryapi-UserService/'
+    context-path: '/culinary-user-service/'
 
 spring:
   application:
-    name: Culinaryapi-UserService
+    name: CulinaryApi-UserService
   datasource:
     url: jdbc:postgresql://localhost:5432/Culinaryapi-UserService
     username: postgres
@@ -33,3 +33,11 @@ Culinary:
         name: Culinary.userEvent.userService
   auth:
     jwt-secret: ZHsOVU5Y6gGU3/S9WZfY5W/Ni6ZixK0I9rZ44MudSRuNYvib+ZoeP/YQNfEvXlDhEgV60Ma8csbcv6ALfOjdyMg==
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: 'http://localhost:8761/eureka'
+  instance:
+    hostname: localhost
